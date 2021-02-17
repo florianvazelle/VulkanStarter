@@ -42,15 +42,15 @@ jobs:
             cxx: "cl",
             generators: "Visual Studio 16 2019"
           }
-        - {
-            name: "Windows Latest MinGW",
-            os: windows-latest,
-            artifact: "windows_mingw",
-            build_type: "Release",
-            cc: "gcc",
-            cxx: "g++",
-            generators: "Ninja"
-          }
+        # - {
+        #     name: "Windows Latest MinGW",
+        #     os: windows-latest,
+        #     artifact: "windows_mingw",
+        #     build_type: "Release",
+        #     cc: "gcc",
+        #     cxx: "g++",
+        #     generators: "Ninja"
+        #   }
         - {
             name: "Ubuntu 20.04 GCC",
             os: ubuntu-20.04,
@@ -104,6 +104,10 @@ jobs:
           python -c "import sys; print(sys.version)"
           python -m pip install --upgrade pip
           pip install conan
+
+      - name: Download Vulkan SDK
+        if: startsWith(matrix.config.os, 'windows')
+        run: Invoke-WebRequest "https://sdk.lunarg.com/sdk/download/$Env:WINDOWS_VULKAN_VERSION/windows/VulkanSDK-$Env:WINDOWS_VULKAN_VERSION-Installer.exe" -OutFile VulkanSDK.exe -v
 
       - name: Install Vulkan SDK
         if: startsWith(matrix.config.os, 'windows')

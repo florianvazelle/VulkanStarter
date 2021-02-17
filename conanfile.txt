@@ -1,5 +1,9 @@
 [requires]
-cxxopts/2.2.1
+glfw/3.3.2
+glm/0.9.9.8
+imgui/1.78
+glslang/8.13.3559
+doctest/2.4.0 
 
 [generators]
 cmake
@@ -7,3 +11,9 @@ cmake
 [imports]
 bin, *.dll -> ./build/bin
 lib, *.dylib* -> ./build/bin
+./res/bindings, imgui_impl_glfw.cpp -> ./external
+./res/bindings, imgui_impl_vulkan.cpp -> ./external
+./res/bindings, imgui_impl_glfw.h -> ./external
+./res/bindings, imgui_impl_vulkan.h -> ./external
+./bin, glslangValidator -> ./bin
+./bin, glslangValidator.exe -> ./bin

@@ -10,6 +10,10 @@ on:
 env:
   CTEST_OUTPUT_ON_FAILURE: 1
 
+  # Vulkan version
+  UNIX_VULKAN_VERSION: 1.2.148
+  WINDOWS_VULKAN_VERSION: 1.2.148.0
+
   # Conan cache environment variables
   CONAN_SYSREQUIRES_MODE: enabled
   CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
@@ -39,6 +43,15 @@ jobs:
             generators: "Visual Studio 16 2019"
           }
         - {
+            name: "Windows Latest MinGW",
+            os: windows-latest,
+            artifact: "windows_mingw",
+            build_type: "Release",
+            cc: "gcc",
+            cxx: "g++",
+            generators: "Ninja"
+          }
+        - {
             name: "Ubuntu 20.04 GCC",
             os: ubuntu-20.04,
             artifact: "ubuntu_gcc",
@@ -46,6 +59,16 @@ jobs:
             enable_doc: "ON",
             cc: "gcc",
             cxx: "g++",
+            generators: "Ninja"
+          }
+        - {
+            name: "Ubuntu 20.04 Clang",
+            os: ubuntu-20.04,
+            artifact: "ubuntu_clang",
+            build_type: "Release",
+            enabled_doc: "ON",
+            cc: "clang",
+            cxx: "clang++",
             generators: "Ninja"
           }
 
@@ -82,6 +105,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install conan
 
+      - name: Install Vulkan SDK
+        if: startsWith(matrix.config.os, 'windows')
+        run: .\VulkanSDK.exe /S
+        shell: cmd
+
       ###### Ubuntu ######
 
       - name: Setup Python
@@ -106,6 +134,24 @@ jobs:
           pip -VV
           pip install --upgrade pip setuptools wheel conan
 
+      - name: Install Ubuntu Dependencies
+        if: startsWith(matrix.config.os, 'ubuntu')
+        run: |
+          sudo apt-get update
+          sudo apt-get install freeglut3-dev \
+            libxi-dev libxinerama-dev libxcursor-dev xorg-dev \
+            libxcb-randr0-dev libxcb-xtest0-dev libxcb-xinerama0-dev libxcb-shape0-dev libxcb-xkb-dev \
+            libxcb-render-util0-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev \
+            libxcb-sync-dev libxcb-xfixes0-dev libx11-xcb-dev libxcb-dri3-dev libxcb-util-dev
+
+      - name: Install Vulkan SDK
+        if: startsWith(matrix.config.os, 'ubuntu')
+        run: |
+          wget -qO - https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
+          sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-$UNIX_VULKAN_VERSION-focal.list https://packages.lunarg.com/vulkan/$UNIX_VULKAN_VERSION/lunarg-vulkan-$UNIX_VULKAN_VERSION-focal.list
+          sudo apt update
+          sudo apt install -f vulkan-sdk
+
       ###### General ######
 
       - name: Create Build Environment
@@ -129,6 +175,7 @@ jobs:
             -DCMAKE_INSTALL_PREFIX="${{ runner.workspace }}/instdir" \
             -DENABLE_DOC=${{ matrix.config.enable_doc }}
         env:
+          VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
           CC: ${{ matrix.config.cc }}
           CXX: ${{ matrix.config.cxx }}
 
@@ -137,6 +184,8 @@ jobs:
         shell: bash
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: cmake --build . --config ${{ matrix.config.build_type }}
+        env:
+          VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
 
       - name: Test
         working-directory: ${{ runner.workspace }}/build
@@ -144,12 +193,16 @@ jobs:
         # Execute tests defined by the CMake configuration.  
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
         run: ctest -C ${{ matrix.config.build_type }}
+        env:
+          VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
 
       - name: Install Strip
         working-directory: ${{ runner.workspace }}/build
         shell: bash
         run: cmake --install . --strip
-    
+        env:
+          VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
+
       - name: Upload
         uses: actions/upload-artifact@v1
         with:

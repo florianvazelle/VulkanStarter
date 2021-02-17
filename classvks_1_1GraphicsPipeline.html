@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>VulkanStarter &lt;img src=&quot;https://github.com/florianvazelle/VulkanStarter/workflows/build/badge.svg&quot; alt=&quot;Actions Status&quot;/&gt; | VulkanStarterStandalone</title>
+  <title>vks::GraphicsPipeline class | VulkanStarterStandalone</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon-dark.png" type="image/png" />
@@ -43,13 +43,64 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          VulkanStarter &lt;img src=&quot;https://github.com/florianvazelle/VulkanStarter/workflows/build/badge.svg&quot; alt=&quot;Actions Status&quot;/&gt;
+          <span class="m-breadcrumb"><a href="namespacevks.html">vks</a>::<wbr/></span>GraphicsPipeline <span class="m-thin">class</span>
+          <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="GraphicsPipeline_8hpp.html">&lt;vks/GraphicsPipeline.hpp&gt;</a></div>
         </h1>
-<p>This is a template to setting up a new Vulkan C++ project.</p><section id="autotoc_md1"><h2><a href="#autotoc_md1">Features</a></h2><ul><li>Sources, headers and mains separated in distinct folders</li><li>Use of modern <a href="https://cmake.org/">CMake</a> for much easier compiling</li><li>Automatically compile shaders with <a href="https://github.com/KhronosGroup/glslang"><code>glslValidator</code></a></li><li>Integrated test suite using <a href="https://github.com/onqtam/doctest">Doctest</a></li><li>Continuous integration via <a href="https://help.github.com/en/actions">GitHub Actions</a></li><li>Support <a href="https://conan.io/">Conan</a> package manager to quick install your package</li></ul></section><section id="autotoc_md2"><h2><a href="#autotoc_md2">Building</a></h2><section id="autotoc_md3"><h3><a href="#autotoc_md3">Build and run the standalone target</a></h3><p>Use the following command to build and run the executable target.</p><pre class="m-code">cmake -Bbuild
-cmake --build build
-./build/bin/VulkanStarterStandalone</pre></section><section id="autotoc_md4"><h3><a href="#autotoc_md4">Build and run test suite</a></h3><p>Use the following commands from the project&#x27;s root directory to run the test suite.</p><pre class="m-code">cmake -Bbuild
-cmake --build build
-./build/bin/VulkanStarterTests</pre></section></section><section id="autotoc_md5"><h2><a href="#autotoc_md5">Dependencies</a></h2><ul><li>C++17 compiler :<ul><li>Visual Studio 2017 or 2019</li><li>GCC 7+ or Clang 5+</li></ul></li><li><a href="https://cmake.org/">CMake</a> for build system creation (&gt;= 3.8)</li><li><a href="https://conan.io/">Conan</a> for install packages (&gt;= 1.0)</li><li><a href="https://doxygen.org/">Doxygen</a> for generate documentation (&gt;= 1.8, optional)</li></ul></section><section id="autotoc_md6"><h2><a href="#autotoc_md6">References</a></h2><ul><li>To include ImGui : <a href="https://blog.conan.io/2019/06/26/An-introduction-to-the-Dear-ImGui-library.html">with Conan</a>, <a href="https://frguthmann.github.io/posts/vulkan_imgui/">with Vulkan</a></li><li>Vulkan code sample : <a href="https://github.com/Overv/VulkanTutorial">VulkanTutorial</a>, <a href="https://github.com/tstullich/vk-sandbox">vkSandbox</a></li><li>Inspirational templates : <a href="https://github.com/tweether/cpp-project">CppProject</a>, <a href="https://github.com/TheLartians/ModernCppStarter">ModernCppStarter</a></li></ul></section>
+        <p><span></span></p>
+        <div class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#base-classes">Base classes</a></li>
+                <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
+                <li><a href="#pub-methods">Public functions</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <section id="base-classes">
+          <h2><a href="#base-classes">Base classes</a></h2>
+          <dl class="m-doc">
+            <dt>
+              class <a href="classNonCopyable.html" class="m-doc">NonCopyable</a>
+            </dt>
+            <dd><span></span></dd>
+          </dl>
+        </section>
+        <section id="typeless-methods">
+          <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
+          <dl class="m-doc">
+            <dt id="ad669847e6ad2b06a1221e3438bb298dd">
+              <span class="m-doc-wrap-bumper"><a href="#ad669847e6ad2b06a1221e3438bb298dd" class="m-doc-self">GraphicsPipeline</a>(</span><span class="m-doc-wrap">const <a href="classvks_1_1Device.html" class="m-doc">Device</a>&amp; device,
+              const <a href="classvks_1_1SwapChain.html" class="m-doc">SwapChain</a>&amp; swapChain,
+              const <a href="classvks_1_1RenderPass.html" class="m-doc">RenderPass</a>&amp; renderPass)</span>
+            </dt>
+            <dd><span></span></dd>
+            <dt id="aabc8cc869c5f24912edc48cd1deaffff">
+              <span class="m-doc-wrap-bumper"><a href="#aabc8cc869c5f24912edc48cd1deaffff" class="m-doc-self">~GraphicsPipeline</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd><span></span></dd>
+          </dl>
+        </section>
+        <section id="pub-methods">
+          <h2><a href="#pub-methods">Public functions</a></h2>
+          <dl class="m-doc">
+            <dt id="a2c0ffd5aae27ca7fc1324edaa4f7ced8">
+              <span class="m-doc-wrap-bumper">void <a href="#a2c0ffd5aae27ca7fc1324edaa4f7ced8" class="m-doc-self">recreate</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd><span></span></dd>
+            <dt id="a9ae72016f8db24d08f23f838ed72565e">
+              <span class="m-doc-wrap-bumper">auto <a href="#a9ae72016f8db24d08f23f838ed72565e" class="m-doc-self">pipeline</a>(</span><span class="m-doc-wrap">) const -&gt; const VkPipeline&amp;</span>
+            </dt>
+            <dd><span></span></dd>
+            <dt id="ac359da05a244792a178566578b320f14">
+              <span class="m-doc-wrap-bumper">auto <a href="#ac359da05a244792a178566578b320f14" class="m-doc-self">layout</a>(</span><span class="m-doc-wrap">) const -&gt; const VkPipelineLayout&amp;</span>
+            </dt>
+            <dd><span></span></dd>
+          </dl>
+        </section>
       </div>
     </div>
   </div>

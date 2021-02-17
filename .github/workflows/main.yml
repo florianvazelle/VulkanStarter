@@ -1,0 +1,176 @@
+name: build
+
+on:
+  push:
+    # Sequence of patterns matched against refs/heads
+    branches:    
+      # Push events on main branch
+      - main
+
+env:
+  CTEST_OUTPUT_ON_FAILURE: 1
+
+  # Conan cache environment variables
+  CONAN_SYSREQUIRES_MODE: enabled
+  CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
+  CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
+
+  # Cache
+  PIP_CACHE_DIR: "${{ github.workspace }}/pip-cache"
+  CHOCO_CACHE_DIR: "${{ github.workspace }}/choco-cache"
+  CPM_SOURCE_CACHE: "${{ github.workspace }}/cpm_modules"
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }} 
+    strategy:
+      fail-fast: true
+      matrix:
+        config: 
+        - {
+            name: "Windows Latest MSVC",
+            os: windows-latest,
+            artifact: "windows_msvc",
+            build_type: "Release",
+            enable_doc: "OFF",
+            cc: "cl",
+            cxx: "cl",
+            generators: "Visual Studio 16 2019"
+          }
+        - {
+            name: "Ubuntu 20.04 GCC",
+            os: ubuntu-20.04,
+            artifact: "ubuntu_gcc",
+            build_type: "Release",
+            enable_doc: "ON",
+            cc: "gcc",
+            cxx: "g++",
+            generators: "Ninja"
+          }
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Cache
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-conan-pip⁻chocolatey-modules
+        with:
+          path: |
+            ${{ env.CONAN_USER_HOME }}
+            ${{ env.PIP_CACHE_DIR }}
+            ${{ env.CHOCO_CACHE_DIR }}
+            ${{ env.CPM_SOURCE_CACHE }}
+          key: ${{ matrix.config.os }}-${{ hashFiles('conanfile.txt') }} }}
+
+      ###### Windows ######
+
+      - name: Install Build Dependencies
+        if: startsWith(matrix.config.os, 'windows')
+        run: |
+          choco config set cacheLocation ${{ env.CHOCO_CACHE_DIR }}
+          choco install ninja cmake
+          ninja --version
+          cmake --version
+
+      - name: Install Conan
+        if: startsWith(matrix.config.os, 'windows')
+        run: |
+          python -c "import sys; print(sys.version)"
+          python -m pip install --upgrade pip
+          pip install conan
+
+      ###### Ubuntu ######
+
+      - name: Setup Python
+        if: startsWith(matrix.config.os, 'ubuntu')
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.6
+
+      - name: Install Build Dependencies
+        if: startsWith(matrix.config.os, 'ubuntu')
+        run: |
+          sudo apt-get update
+          sudo apt-get install ninja-build cmake doxygen
+          ninja --version
+          cmake --version
+          gcc --version
+          doxygen --version
+
+      - name: Install Conan
+        if: startsWith(matrix.config.os, 'ubuntu')
+        run: |
+          pip -VV
+          pip install --upgrade pip setuptools wheel conan
+
+      ###### General ######
+
+      - name: Create Build Environment
+        # Some projects don't allow in-source building, so create a separate build directory
+        # We'll use this as our working directory for all subsequent commands
+        run: cmake -E make_directory ${{ runner.workspace }}/build ${{ runner.workspace }}/instdir
+
+      - name: Configure CMake
+        # Use a bash shell so we can use the same syntax for environment variable
+        # access regardless of the host operating system
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        # Note the current convention is to use the -S and -B options here to specify source 
+        # and build directories, but this is only available with CMake 3.13 and higher.  
+        # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
+        run: |
+          cmake \
+            $GITHUB_WORKSPACE \
+            -DCMAKE_BUILD_TYPE="${{ matrix.config.build_type }}" \
+            -G "${{ matrix.config.generators }}" \
+            -DCMAKE_INSTALL_PREFIX="${{ runner.workspace }}/instdir" \
+            -DENABLE_DOC=${{ matrix.config.enable_doc }}
+        env:
+          CC: ${{ matrix.config.cc }}
+          CXX: ${{ matrix.config.cxx }}
+
+      - name: Build
+        working-directory: ${{ runner.workspace }}/build
+        shell: bash
+        # Execute the build.  You can specify a specific target with "--target <NAME>"
+        run: cmake --build . --config ${{ matrix.config.build_type }}
+
+      - name: Test
+        working-directory: ${{ runner.workspace }}/build
+        shell: bash
+        # Execute tests defined by the CMake configuration.  
+        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+        run: ctest -C ${{ matrix.config.build_type }}
+
+      - name: Install Strip
+        working-directory: ${{ runner.workspace }}/build
+        shell: bash
+        run: cmake --install . --strip
+    
+      - name: Upload
+        uses: actions/upload-artifact@v1
+        with:
+          path: ${{ runner.workspace }}/instdir
+          name: ${{ matrix.config.artifact }}
+
+  docs:
+    name: Publish documentation
+    runs-on: macos-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@master
+        with:
+          name: ubuntu_gcc
+          path: ${{ runner.workspace }}/instdir
+
+      - name: Publish
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ runner.workspace }}/instdir/docs/doxygen/html

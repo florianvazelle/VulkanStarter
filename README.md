@@ -1,4 +1,5 @@
-# VulkanStarter ![Actions Status](https://github.com/florianvazelle/VulkanStarter/workflows/build/badge.svg)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/florianvazelle/VulkanStarter/build/main?label=Windows%20%7C%20Linux&logo=github)
+# VulkanStarter
 
 This is a template to setting up a new Vulkan C++ project.
 

@@ -41,5 +41,5 @@ endfunction()
 
 # let's use it as a script
 if(EXISTS "${PATH}")
-    embed_resource("${PATH}" "${HEADER}.h" "${GLOBAL}")
+    embed_resource("${PATH}" "${HEADER}" "${GLOBAL}")
 endif()

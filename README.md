@@ -1,4 +1,5 @@
-# VulkanStarter ![Actions Status](https://github.com/florianvazelle/VulkanStarter/workflows/build/badge.svg)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/florianvazelle/VulkanStarter/build/main?label=Windows%20%7C%20Linux&logo=github)
+# VulkanStarter
 
 This is a template to setting up a new Vulkan C++ project.
 
@@ -36,10 +37,11 @@ cmake --build build
 ## Dependencies
 
 - C++17 compiler :
-    - Visual Studio 2017 or 2019
-    - GCC 7+ or Clang 5+
-- [CMake](https://cmake.org/) for build system creation (>= 3.8)
-- [Conan](https://conan.io/) for install packages (>= 1.0)
+  - Visual Studio 2016
+  - GCC 7+ or Clang 8+
+- [Conan](https://conan.io/) for install packages
+- [Git](https://git-scm.com/) for cmake automatic dependencies
+- [CMake](https://cmake.org/) for build system creation (>= 3.12)
 - [Doxygen](https://doxygen.org/) for generate documentation (>= 1.8, optional)
 
 ## References

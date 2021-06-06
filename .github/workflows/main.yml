@@ -1,15 +1,8 @@
 name: build
 
-on:
-  push:
-    # Sequence of patterns matched against refs/heads
-    branches:    
-      # Push events on main branch
-      - main
+on: [push, pull_request]
 
 env:
-  CTEST_OUTPUT_ON_FAILURE: 1
-
   # Vulkan version
   UNIX_VULKAN_VERSION: 1.2.148
   WINDOWS_VULKAN_VERSION: 1.2.148.0
@@ -25,121 +18,76 @@ env:
   CPM_SOURCE_CACHE: "${{ github.workspace }}/cpm_modules"
 
 jobs:
-  build:
-    name: ${{ matrix.config.name }}
-    runs-on: ${{ matrix.config.os }} 
+  linux:
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        config: 
-        - {
-            name: "Windows Latest MSVC",
-            os: windows-latest,
-            artifact: "windows_msvc",
-            build_type: "Release",
-            enable_doc: "OFF",
-            cc: "cl",
-            cxx: "cl",
-            generators: "Visual Studio 16 2019"
-          }
-        # - {
-        #     name: "Windows Latest MinGW",
-        #     os: windows-latest,
-        #     artifact: "windows_mingw",
-        #     build_type: "Release",
-        #     cc: "gcc",
-        #     cxx: "g++",
-        #     generators: "Ninja"
-        #   }
-        - {
-            name: "Ubuntu 20.04 GCC",
-            os: ubuntu-20.04,
-            artifact: "ubuntu_gcc",
-            build_type: "Release",
-            enable_doc: "ON",
-            cc: "gcc",
-            cxx: "g++",
-            generators: "Ninja"
-          }
-        - {
-            name: "Ubuntu 20.04 Clang",
-            os: ubuntu-20.04,
-            artifact: "ubuntu_clang",
-            build_type: "Release",
-            enabled_doc: "ON",
-            cc: "clang",
-            cxx: "clang++",
-            generators: "Ninja"
-          }
+        compiler: [
+            g++-7, g++-8, g++-9, g++,
+            clang++-8, clang++-9, clang++
+        ]
+
+    runs-on: ubuntu-latest
 
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
       - name: Cache
         uses: actions/cache@v2
         env:
-          cache-name: cache-conan-pip⁻chocolatey-modules
+          cache-name: cache-conan-pip-chocolatey-modules
         with:
           path: |
             ${{ env.CONAN_USER_HOME }}
             ${{ env.PIP_CACHE_DIR }}
             ${{ env.CHOCO_CACHE_DIR }}
             ${{ env.CPM_SOURCE_CACHE }}
-          key: ${{ matrix.config.os }}-${{ hashFiles('conanfile.txt') }} }}
+          key: ubuntu-${{ hashFiles('conanfile.txt') }} }}
 
-      ###### Windows ######
-
-      - name: Install Build Dependencies
-        if: startsWith(matrix.config.os, 'windows')
+      - name: Install g++-7
+        if: ${{ matrix.compiler == 'g++-7' }}
         run: |
-          choco config set cacheLocation ${{ env.CHOCO_CACHE_DIR }}
-          choco install ninja cmake
-          ninja --version
-          cmake --version
+          sudo apt-get update
+          sudo apt-get install g++-7 -y
 
-      - name: Install Conan
-        if: startsWith(matrix.config.os, 'windows')
+      - name: Install g++-8
+        if: ${{ matrix.compiler == 'g++-8' }}
         run: |
-          python -c "import sys; print(sys.version)"
-          python -m pip install --upgrade pip
-          pip install conan
+          sudo apt-get update
+          sudo apt-get install g++-8 -y
 
-      - name: Download Vulkan SDK
-        if: startsWith(matrix.config.os, 'windows')
-        run: Invoke-WebRequest "https://sdk.lunarg.com/sdk/download/$Env:WINDOWS_VULKAN_VERSION/windows/VulkanSDK-$Env:WINDOWS_VULKAN_VERSION-Installer.exe" -OutFile VulkanSDK.exe -v
+      - name: Install clang-8
+        if: ${{ matrix.compiler == 'clang++-8' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install clang-8 -y
 
-      - name: Install Vulkan SDK
-        if: startsWith(matrix.config.os, 'windows')
-        run: .\VulkanSDK.exe /S
-        shell: cmd
-
-      ###### Ubuntu ######
+      - name: Install clang-9
+        if: ${{ matrix.compiler == 'clang++-9' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install clang-9 -y
 
       - name: Setup Python
-        if: startsWith(matrix.config.os, 'ubuntu')
         uses: actions/setup-python@v2
         with:
           python-version: 3.6
 
       - name: Install Build Dependencies
-        if: startsWith(matrix.config.os, 'ubuntu')
         run: |
           sudo apt-get update
           sudo apt-get install ninja-build cmake doxygen
           ninja --version
           cmake --version
           gcc --version
-          doxygen --version
+          clang --version
 
       - name: Install Conan
-        if: startsWith(matrix.config.os, 'ubuntu')
         run: |
           pip -VV
           pip install --upgrade pip setuptools wheel conan
 
       - name: Install Ubuntu Dependencies
-        if: startsWith(matrix.config.os, 'ubuntu')
         run: |
           sudo apt-get update
           sudo apt-get install freeglut3-dev \
@@ -149,14 +97,11 @@ jobs:
             libxcb-sync-dev libxcb-xfixes0-dev libx11-xcb-dev libxcb-dri3-dev libxcb-util-dev
 
       - name: Install Vulkan SDK
-        if: startsWith(matrix.config.os, 'ubuntu')
         run: |
           wget -qO - https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
           sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-$UNIX_VULKAN_VERSION-focal.list https://packages.lunarg.com/vulkan/$UNIX_VULKAN_VERSION/lunarg-vulkan-$UNIX_VULKAN_VERSION-focal.list
           sudo apt update
           sudo apt install -f vulkan-sdk
-
-      ###### General ######
 
       - name: Create Build Environment
         # Some projects don't allow in-source building, so create a separate build directory
@@ -167,38 +112,125 @@ jobs:
         # Use a bash shell so we can use the same syntax for environment variable
         # access regardless of the host operating system
         shell: bash
-        working-directory: ${{runner.workspace}}/build
-        # Note the current convention is to use the -S and -B options here to specify source 
-        # and build directories, but this is only available with CMake 3.13 and higher.  
+        working-directory: ${{ runner.workspace }}/build
+        env:
+          CXX: ${{ matrix.compiler }}
+        # Note the current convention is to use the -S and -B options here to specify source
+        # and build directories, but this is only available with CMake 3.13 and higher.
         # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
         run: |
           cmake \
             $GITHUB_WORKSPACE \
-            -DCMAKE_BUILD_TYPE="${{ matrix.config.build_type }}" \
-            -G "${{ matrix.config.generators }}" \
-            -DCMAKE_INSTALL_PREFIX="${{ runner.workspace }}/instdir" \
-            -DENABLE_DOC=${{ matrix.config.enable_doc }}
-        env:
-          VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
-          CC: ${{ matrix.config.cc }}
-          CXX: ${{ matrix.config.cxx }}
+            -DBUILD_TESTING=ON -DBUILD_DOCS=ON -DINSTALL_APPS=ON \
+            -DCMAKE_INSTALL_PREFIX="${{ runner.workspace }}/instdir"
 
       - name: Build
         working-directory: ${{ runner.workspace }}/build
         shell: bash
-        # Execute the build.  You can specify a specific target with "--target <NAME>"
-        run: cmake --build . --config ${{ matrix.config.build_type }}
+        # Execute the build. You can specify a specific target with "--target <NAME>"
+        run: cmake --build . --config Release
+
+      - name: Run tests
+        working-directory: ${{ runner.workspace }}/build
+        env:
+          CTEST_OUTPUT_ON_FAILURE: 1
+        # Execute tests defined by the CMake configuration.
+        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+        run: ctest --timeout 10 -C Release -j4
+
+      - name: Install Strip
+        working-directory: ${{ runner.workspace }}/build
+        shell: bash
+        run: cmake --install . --strip
+
+      - name: Upload
+        uses: actions/upload-artifact@v1
+        with:
+          path: ${{ runner.workspace }}/instdir
+          name: ubuntu-${{ matrix.compiler }}
+
+  windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, windows-2016]
+        toolset: [clang-cl, default, v141]
+        include:
+          - toolset: clang-cl
+            toolset_option: -T"ClangCl"
+          - toolset: v141
+            toolset_option: -T"v141"
+        exclude:
+          - os: windows-2016
+            toolset: clang-cl
+          - os: windows-2016
+            toolset: v141
+
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-conan-pip-chocolatey-modules
+        with:
+          path: |
+            ${{ env.CONAN_USER_HOME }}
+            ${{ env.PIP_CACHE_DIR }}
+            ${{ env.CHOCO_CACHE_DIR }}
+            ${{ env.CPM_SOURCE_CACHE }}
+          key: windows-${{ hashFiles('conanfile.txt') }} }}
+
+      - name: Install Build Dependencies
+        run: |
+          choco config set cacheLocation ${{ env.CHOCO_CACHE_DIR }}
+          choco install ninja cmake
+          ninja --version
+          cmake --version
+
+      - name: Install Conan
+        run: |
+          python -c "import sys; print(sys.version)"
+          python -m pip install --upgrade pip
+          pip install conan
+
+      - name: Download Vulkan SDK
+        run: Invoke-WebRequest "https://sdk.lunarg.com/sdk/download/$Env:WINDOWS_VULKAN_VERSION/windows/VulkanSDK-$Env:WINDOWS_VULKAN_VERSION-Installer.exe" -OutFile VulkanSDK.exe -v
+
+      - name: Install Vulkan SDK
+        run: .\VulkanSDK.exe /S
+        shell: cmd
+
+      - name: Create Build Environment
+        run: cmake -E make_directory ${{ runner.workspace }}/build ${{ runner.workspace }}/instdir
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        env:
+          CXX: ${{ matrix.compiler }}
+          VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
+        run: |
+          cmake \
+            $GITHUB_WORKSPACE \
+            -DBUILD_TESTING=ON -DBUILD_DOCS=ON -DINSTALL_APPS=ON \
+            -DCMAKE_INSTALL_PREFIX="${{ runner.workspace }}/instdir"
+
+      - name: Build
+        working-directory: ${{ runner.workspace }}/build
+        shell: bash
+        run: cmake --build . --config Release
         env:
           VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
 
-      - name: Test
+      - name: Run tests
         working-directory: ${{ runner.workspace }}/build
-        shell: bash
-        # Execute tests defined by the CMake configuration.  
-        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: ctest -C ${{ matrix.config.build_type }}
         env:
+          CTEST_OUTPUT_ON_FAILURE: 1
           VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
+        run: ctest --timeout 10 -C Release -j4
 
       - name: Install Strip
         working-directory: ${{ runner.workspace }}/build
@@ -211,23 +243,27 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           path: ${{ runner.workspace }}/instdir
-          name: ${{ matrix.config.artifact }}
+          name: windows-${{ matrix.toolset }}
 
   docs:
     name: Publish documentation
     runs-on: macos-latest
-    needs: build
+    needs: linux
 
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/download-artifact@master
+      - uses: actions/download-artifact@v2
         with:
-          name: ubuntu_gcc
-          path: ${{ runner.workspace }}/instdir
+          name: ubuntu-g++
+          path: ${{ runner.workspace }}
+
+      - name: Display structure of downloaded files
+        working-directory: ${{ runner.workspace }}
+        run: ls -R
 
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ runner.workspace }}/instdir/docs/doxygen/html
+          publish_dir: ${{ runner.workspace }}/docs/doxygen/html

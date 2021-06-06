@@ -37,8 +37,8 @@ cmake --build build
 ## Dependencies
 
 - C++17 compiler :
-    - Visual Studio 2017 or 2019
-    - GCC 7+ or Clang 5+
+  - Visual Studio 2016
+  - GCC 7+ or Clang 8+
 - [CMake](https://cmake.org/) for build system creation (>= 3.8)
 - [Conan](https://conan.io/) for install packages (>= 1.0)
 - [Doxygen](https://doxygen.org/) for generate documentation (>= 1.8, optional)

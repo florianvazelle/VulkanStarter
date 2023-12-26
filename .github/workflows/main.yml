@@ -4,8 +4,8 @@ on: [push, pull_request]
 
 env:
   # Vulkan version
-  UNIX_VULKAN_VERSION: 1.2.148
-  WINDOWS_VULKAN_VERSION: 1.2.148.0
+  UNIX_VULKAN_VERSION: 1.2.198.1
+  WINDOWS_VULKAN_VERSION: 1.2.198.1
 
   # Conan cache environment variables
   CONAN_SYSREQUIRES_MODE: enabled
@@ -22,10 +22,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler: [
-            g++-7, g++-8, g++-9, g++,
-            clang++-8, clang++-9, clang++
-        ]
+        - compiler: g++-10
+          package: g++-10
+        - compiler: g++-11
+          package: g++-11
+        - compiler: g++-12
+          package: g++-12
+        - compiler: clang-15
+          package: clang++-15
+        - compiler: clang-16
+          package: clang++-16
+        - compiler: clang-17
+          package: clang++-17
 
     runs-on: ubuntu-latest
 
@@ -44,34 +52,15 @@ jobs:
             ${{ env.CPM_SOURCE_CACHE }}
           key: ubuntu-${{ hashFiles('conanfile.txt') }} }}
 
-      - name: Install g++-7
-        if: ${{ matrix.compiler == 'g++-7' }}
+      - name: Install ${{ matrix.package }}
         run: |
           sudo apt-get update
-          sudo apt-get install g++-7 -y
-
-      - name: Install g++-8
-        if: ${{ matrix.compiler == 'g++-8' }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install g++-8 -y
-
-      - name: Install clang-8
-        if: ${{ matrix.compiler == 'clang++-8' }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install clang-8 -y
-
-      - name: Install clang-9
-        if: ${{ matrix.compiler == 'clang++-9' }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install clang-9 -y
+          sudo apt-get install ${{ matrix.package }}
 
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.6
+          python-version: 3.10
 
       - name: Install Build Dependencies
         run: |

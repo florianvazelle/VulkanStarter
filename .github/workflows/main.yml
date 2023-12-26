@@ -211,7 +211,7 @@ jobs:
         working-directory: ${{runner.workspace}}/build
         env:
           CXX: ${{ matrix.compiler }}
-          VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
+          VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
         run: |
           cmake \
             $GITHUB_WORKSPACE \
@@ -223,13 +223,13 @@ jobs:
         shell: bash
         run: cmake --build . --config Release
         env:
-          VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
+          VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
 
       - name: Run tests
         working-directory: ${{ runner.workspace }}/build
         env:
           CTEST_OUTPUT_ON_FAILURE: 1
-          VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
+          VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
         run: ctest --timeout 10 -C Release -j4
 
       - name: Install Strip
@@ -237,7 +237,7 @@ jobs:
         shell: bash
         run: cmake --install . --strip
         env:
-          VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
+          VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
 
       - name: Upload
         uses: actions/upload-artifact@v1

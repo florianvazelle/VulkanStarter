@@ -144,7 +144,7 @@ jobs:
         run: cmake --install . --strip
 
       - name: Upload
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           path: ${{ runner.workspace }}/instdir
           name: ubuntu-${{ matrix.compiler }}
@@ -240,7 +240,7 @@ jobs:
           VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
 
       - name: Upload
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           path: ${{ runner.workspace }}/instdir
           name: windows-${{ matrix.toolset }}

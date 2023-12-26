@@ -45,10 +45,10 @@
         <h1>
           VulkanStarter
         </h1>
-<img class="m-image" src="main?label=Windows%20%7C%20Linux&logo=github" alt="Image" /><section id="autotoc_md0"><h2><a href="#autotoc_md0">VulkanStarter</a></h2><p>This is a template to setting up a new Vulkan C++ project.</p><section id="autotoc_md1"><h3><a href="#autotoc_md1">Features</a></h3><ul><li>Sources, headers and mains separated in distinct folders</li><li>Use of modern <a href="https://cmake.org/">CMake</a> for much easier compiling</li><li>Automatically compile shaders with <a href="https://github.com/KhronosGroup/glslang"><code>glslValidator</code></a></li><li>Integrated test suite using <a href="https://github.com/onqtam/doctest">Doctest</a></li><li>Continuous integration via <a href="https://help.github.com/en/actions">GitHub Actions</a></li><li>Support <a href="https://conan.io/">Conan</a> package manager to quick install your package</li></ul></section><section id="autotoc_md2"><h3><a href="#autotoc_md2">Building</a></h3><section id="autotoc_md3"><h4><a href="#autotoc_md3">Build and run the standalone target</a></h4><p>Use the following command to build and run the executable target.</p><pre class="m-code">cmake -Bbuild
-cmake --build build
-./build/bin/VulkanStarterStandalone</pre></section><section id="autotoc_md4"><h4><a href="#autotoc_md4">Build and run test suite</a></h4><p>Use the following commands from the project&#x27;s root directory to run the test suite.</p><pre class="m-code">cmake -Bbuild
-cmake --build build
+<img class="m-image" src="main.yml?branch=main&label=Windows%20%7C%20Linux&logo=github" alt="Image" /><section id="autotoc_md0"><h2><a href="#autotoc_md0">VulkanStarter</a></h2><p>This is a template to setting up a new Vulkan C++ project.</p><section id="autotoc_md1"><h3><a href="#autotoc_md1">Features</a></h3><ul><li>Sources, headers and mains separated in distinct folders</li><li>Use of modern <a href="https://cmake.org/">CMake</a> for much easier compiling</li><li>Automatically compile shaders with <a href="https://github.com/KhronosGroup/glslang"><code>glslValidator</code></a></li><li>Integrated test suite using <a href="https://github.com/onqtam/doctest">Doctest</a></li><li>Continuous integration via <a href="https://help.github.com/en/actions">GitHub Actions</a></li><li>Support <a href="https://conan.io/">Conan</a> package manager to quick install your package</li></ul></section><section id="autotoc_md2"><h3><a href="#autotoc_md2">Building</a></h3><section id="autotoc_md3"><h4><a href="#autotoc_md3">Build and run the standalone target</a></h4><p>Use the following command to build and run the executable target.</p><pre class="m-code">cmake<span class="w"> </span>-Bbuild
+cmake<span class="w"> </span>--build<span class="w"> </span>build
+./build/bin/VulkanStarterStandalone</pre></section><section id="autotoc_md4"><h4><a href="#autotoc_md4">Build and run test suite</a></h4><p>Use the following commands from the project&#x27;s root directory to run the test suite.</p><pre class="m-code">cmake<span class="w"> </span>-Bbuild
+cmake<span class="w"> </span>--build<span class="w"> </span>build
 ./build/bin/VulkanStarterTests</pre></section></section><section id="autotoc_md5"><h3><a href="#autotoc_md5">Dependencies</a></h3><ul><li>C++17 compiler :<ul><li>Visual Studio 2016</li><li>GCC 7+ or Clang 8+</li></ul></li><li><a href="https://conan.io/">Conan</a> for install packages</li><li><a href="https://git-scm.com/">Git</a> for cmake automatic dependencies</li><li><a href="https://cmake.org/">CMake</a> for build system creation (&gt;= 3.12)</li><li><a href="https://doxygen.org/">Doxygen</a> for generate documentation (&gt;= 1.8, optional)</li></ul></section><section id="autotoc_md6"><h3><a href="#autotoc_md6">References</a></h3><ul><li>To include ImGui : <a href="https://blog.conan.io/2019/06/26/An-introduction-to-the-Dear-ImGui-library.html">with Conan</a>, <a href="https://frguthmann.github.io/posts/vulkan_imgui/">with Vulkan</a></li><li>Vulkan code sample : <a href="https://github.com/Overv/VulkanTutorial">VulkanTutorial</a>, <a href="https://github.com/tstullich/vk-sandbox">vkSandbox</a></li><li>Inspirational templates : <a href="https://github.com/tweether/cpp-project">CppProject</a>, <a href="https://github.com/TheLartians/ModernCppStarter">ModernCppStarter</a></li></ul></section></section>
       </div>
     </div>
@@ -88,8 +88,8 @@ cmake --build build
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

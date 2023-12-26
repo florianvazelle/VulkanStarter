@@ -1,4 +1,5 @@
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/florianvazelle/VulkanStarter/build/main?label=Windows%20%7C%20Linux&logo=github)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/florianvazelle/VulkanStarter/main.yml?branch=main&label=Windows%20%7C%20Linux&logo=github)
+
 # VulkanStarter
 
 This is a template to setting up a new Vulkan C++ project.

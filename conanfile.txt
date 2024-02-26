@@ -1,5 +1,5 @@
 [requires]
-glfw/3.3.8
+glfw/3.4
 glm/0.9.9.8
 imgui/1.78
 glslang/8.13.3559

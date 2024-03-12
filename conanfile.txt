@@ -1,6 +1,6 @@
 [requires]
 glfw/3.4
-glm/0.9.9.8
+glm/cci.20220420
 imgui/1.78
 glslang/8.13.3559
 doctest/2.4.11 

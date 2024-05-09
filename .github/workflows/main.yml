@@ -1,6 +1,13 @@
 name: build
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+  # Ensure the build works on main
+  push:
+    branches: [main]
+    tags: ['*']
+  # Ensure the build works on each pull request
+  pull_request:
 
 env:
   # Vulkan version

@@ -9,27 +9,25 @@
 
 using namespace vks;
 
-CommandBuffers::CommandBuffers(const Device& device,
-                               const RenderPass& renderPass,
-                               const SwapChain& swapChain,
-                               const GraphicsPipeline& graphicsPipeline,
-                               const CommandPool& commandPool)
-    : m_device(device),
-      m_renderPass(renderPass),
-      m_swapChain(swapChain),
-      m_graphicsPipeline(graphicsPipeline),
-      m_commandPool(commandPool) {}
+CommandBuffers::CommandBuffers(const Device &device,
+                               const RenderPass &renderPass,
+                               const SwapChain &swapChain,
+                               const GraphicsPipeline &graphicsPipeline,
+                               const CommandPool &commandPool)
+    : m_device(device), m_renderPass(renderPass), m_swapChain(swapChain),
+      m_graphicsPipeline(graphicsPipeline), m_commandPool(commandPool) {}
 
 CommandBuffers::~CommandBuffers() { destroyCommandBuffers(); }
 
 void CommandBuffers::destroyCommandBuffers() {
   vkFreeCommandBuffers(m_device.logical(), m_commandPool.handle(),
-                       static_cast<uint32_t>(m_commandBuffers.size()), m_commandBuffers.data());
+                       static_cast<uint32_t>(m_commandBuffers.size()),
+                       m_commandBuffers.data());
 }
 
-void CommandBuffers::SingleTimeCommands(const Device& device,
-                                        const CommandPool& cmdPool,
-                                        const std::function<void(const VkCommandBuffer&)>& func) {
+void CommandBuffers::SingleTimeCommands(
+    const Device &device, const CommandPool &cmdPool,
+    const std::function<void(const VkCommandBuffer &)> &func) {
   VkCommandBufferAllocateInfo allocInfo = {};
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -37,7 +35,8 @@ void CommandBuffers::SingleTimeCommands(const Device& device,
   allocInfo.commandBufferCount = 1;
 
   VkCommandBuffer commandBuffer = {};
-  if (vkAllocateCommandBuffers(device.logical(), &allocInfo, &commandBuffer) != VK_SUCCESS) {
+  if (vkAllocateCommandBuffers(device.logical(), &allocInfo, &commandBuffer) !=
+      VK_SUCCESS) {
     throw std::runtime_error("failed to allocate command buffers!");
   }
 

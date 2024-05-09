@@ -329,7 +329,7 @@ endmacro()
 
 function(conan_cmake_install)
     # Calls "conan install"
-    # Argument BUILD is equivalant to --build={missing, PkgName,...} or
+    # Argument BUILD is equivalent to --build={missing, PkgName,...} or
     # --build when argument is 'BUILD all' (which builds all packages from source)
     # Argument CONAN_COMMAND, to specify the conan path, e.g. in case of running from source
     # cmake does not identify conan as command, even if it is +x and it is in the path
@@ -465,7 +465,7 @@ endmacro()
 
 macro(conan_cmake_run)
     parse_arguments(${ARGV})
-    
+
     if(ARGUMENTS_CONFIGURATION_TYPES AND NOT CMAKE_CONFIGURATION_TYPES)
         message(WARNING "CONFIGURATION_TYPES should only be specified for multi-configuration generators")
     elseif(ARGUMENTS_CONFIGURATION_TYPES AND ARGUMENTS_BUILD_TYPE)

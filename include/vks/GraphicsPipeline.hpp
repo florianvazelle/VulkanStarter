@@ -2,39 +2,40 @@
 #ifndef GRAPHICSPIPELINE_HPP
 #define GRAPHICSPIPELINE_HPP
 
-#include <vulkan/vulkan.h>
 #include <NonCopyable.hpp>
 #include <vector>
+#include <vulkan/vulkan.h>
 
 namespace vks {
 
-  class Device;
-  class SwapChain;
-  class RenderPass;
-  struct ShaderDetails;
+class Device;
+class SwapChain;
+class RenderPass;
+struct ShaderDetails;
 
-  class GraphicsPipeline : public NonCopyable {
-  public:
-    GraphicsPipeline(const Device& device, const SwapChain& swapChain, const RenderPass& renderPass);
-    ~GraphicsPipeline();
+class GraphicsPipeline : public NonCopyable {
+public:
+  GraphicsPipeline(const Device &device, const SwapChain &swapChain,
+                   const RenderPass &renderPass);
+  ~GraphicsPipeline();
 
-    void recreate();
+  void recreate();
 
-    inline const VkPipeline& pipeline() const { return m_pipeline; }
-    inline const VkPipelineLayout& layout() const { return m_layout; }
+  inline const VkPipeline &pipeline() const { return m_pipeline; }
+  inline const VkPipelineLayout &layout() const { return m_layout; }
 
-  private:
-    VkPipeline m_pipeline;
-    VkPipelineLayout m_layout;
-    VkPipelineLayout m_oldLayout;
+private:
+  VkPipeline m_pipeline;
+  VkPipelineLayout m_layout;
+  VkPipelineLayout m_oldLayout;
 
-    const Device& m_device;
-    const SwapChain& m_swapChain;
-    const RenderPass& m_renderPass;
+  const Device &m_device;
+  const SwapChain &m_swapChain;
+  const RenderPass &m_renderPass;
 
-    void createPipeline();
-    VkShaderModule createShaderModule(const std::vector<unsigned char>& code);
-  };
-}  // namespace vks
+  void createPipeline();
+  VkShaderModule createShaderModule(const std::vector<unsigned char> &code);
+};
+} // namespace vks
 
-#endif  // GRAPHICSPIPELINE_HPP
+#endif // GRAPHICSPIPELINE_HPP

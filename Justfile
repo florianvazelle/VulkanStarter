@@ -93,7 +93,7 @@ clean:
 @ci-row-clang version os:
     echo '{compiler": "clang", "version": "{{ version }}", "cxx": "clang++-{{ version }}", "os": "{{ os }}"}'
 
-# Display the compatibilty matrix for compiler versions 
+# Display the compatibility matrix for compiler versions
 @ci-matrix:
     # GCC (https://gcc.gnu.org/releases.html)
     for i in $(seq 7 9); do just ci-row-gcc $i ubuntu-20.04; done

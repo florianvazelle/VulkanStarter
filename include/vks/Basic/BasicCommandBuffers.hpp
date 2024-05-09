@@ -1,25 +1,24 @@
 #ifndef BASICCOMMANDBUFFERS_HPP
 #define BASICCOMMANDBUFFERS_HPP
 
-#include <vulkan/vulkan.h>
 #include <vector>
 #include <vks/CommandBuffers.hpp>
+#include <vulkan/vulkan.h>
 
 namespace vks {
 
-  class BasicCommandBuffers : public CommandBuffers {
-  public:
-    BasicCommandBuffers(const Device& device,
-                        const RenderPass& renderpass,
-                        const SwapChain& swapChain,
-                        const GraphicsPipeline& graphicsPipeline,
-                        const CommandPool& commandPool);
-    void recreate();
+class BasicCommandBuffers : public CommandBuffers {
+public:
+  BasicCommandBuffers(const Device &device, const RenderPass &renderpass,
+                      const SwapChain &swapChain,
+                      const GraphicsPipeline &graphicsPipeline,
+                      const CommandPool &commandPool);
+  void recreate();
 
-  private:
-    void createCommandBuffers();
-  };
+private:
+  void createCommandBuffers();
+};
 
-}  // namespace vks
+} // namespace vks
 
-#endif  // BASICCOMMANDBUFFERS_HPP
+#endif // BASICCOMMANDBUFFERS_HPP

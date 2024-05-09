@@ -8,20 +8,18 @@ const uint32_t HEIGHT = 600;
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
 Application::Application()
-    : instance("Hello Triangle", "No Engine", true),
-      debugMessenger(instance),
+    : instance("Hello Triangle", "No Engine", true), debugMessenger(instance),
       window({WIDTH, HEIGHT}, "Vulkan", instance),
       device(instance, window, Instance::DeviceExtensions),
-      swapChain(device, window),
-      renderPass(device, swapChain),
-      graphicsPipeline(device, swapChain, renderPass),
-      commandPool(device, 0),
-      commandBuffers(device, renderPass, swapChain, graphicsPipeline, commandPool),
+      swapChain(device, window), renderPass(device, swapChain),
+      graphicsPipeline(device, swapChain, renderPass), commandPool(device, 0),
+      commandBuffers(device, renderPass, swapChain, graphicsPipeline,
+                     commandPool),
       syncObjects(device, swapChain.numImages(), MAX_FRAMES_IN_FLIGHT),
       interface(instance, window, device, swapChain, graphicsPipeline) {}
 
 void Application::mainLoop() {
-  window.setDrawFrameFunc([this](bool& framebufferResized) {
+  window.setDrawFrameFunc([this](bool &framebufferResized) {
     drawImGui();
     drawFrame(framebufferResized);
   });
@@ -30,15 +28,15 @@ void Application::mainLoop() {
   vkDeviceWaitIdle(device.logical());
 }
 
-void Application::drawFrame(bool& framebufferResized) {
-  vkWaitForFences(device.logical(), 1, &syncObjects.inFlightFence(currentFrame), VK_TRUE,
-                  UINT64_MAX);
+void Application::drawFrame(bool &framebufferResized) {
+  vkWaitForFences(device.logical(), 1, &syncObjects.inFlightFence(currentFrame),
+                  VK_TRUE, UINT64_MAX);
 
   // Get image from swap chain
   uint32_t imageIndex;
-  VkResult result = vkAcquireNextImageKHR(device.logical(), swapChain.handle(), UINT64_MAX,
-                                          syncObjects.imageAvailable(currentFrame), VK_NULL_HANDLE,
-                                          &imageIndex);
+  VkResult result = vkAcquireNextImageKHR(
+      device.logical(), swapChain.handle(), UINT64_MAX,
+      syncObjects.imageAvailable(currentFrame), VK_NULL_HANDLE, &imageIndex);
   // Create new swap chain if needed
   if (result == VK_ERROR_OUT_OF_DATE_KHR) {
     recreateSwapChain(framebufferResized);
@@ -48,10 +46,11 @@ void Application::drawFrame(bool& framebufferResized) {
   }
 
   if (syncObjects.imageInFlight(imageIndex) != VK_NULL_HANDLE) {
-    vkWaitForFences(device.logical(), 1, &syncObjects.imageInFlight(imageIndex), VK_TRUE,
-                    UINT64_MAX);
+    vkWaitForFences(device.logical(), 1, &syncObjects.imageInFlight(imageIndex),
+                    VK_TRUE, UINT64_MAX);
   }
-  syncObjects.imageInFlight(imageIndex) = syncObjects.inFlightFence(currentFrame);
+  syncObjects.imageInFlight(imageIndex) =
+      syncObjects.inFlightFence(currentFrame);
 
   // Record UI draw data
   interface.recordCommandBuffers(imageIndex);
@@ -60,13 +59,14 @@ void Application::drawFrame(bool& framebufferResized) {
   submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
   VkSemaphore waitSemaphores[] = {syncObjects.imageAvailable(currentFrame)};
-  VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+  VkPipelineStageFlags waitStages[] = {
+      VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
   submitInfo.waitSemaphoreCount = 1;
   submitInfo.pWaitSemaphores = waitSemaphores;
   submitInfo.pWaitDstStageMask = waitStages;
 
-  VkCommandBuffer cmdBuffers[]
-      = {commandBuffers.command(imageIndex), interface.command(imageIndex)};
+  VkCommandBuffer cmdBuffers[] = {commandBuffers.command(imageIndex),
+                                  interface.command(imageIndex)};
   submitInfo.commandBufferCount = 2;
   submitInfo.pCommandBuffers = cmdBuffers;
 
@@ -76,8 +76,8 @@ void Application::drawFrame(bool& framebufferResized) {
 
   vkResetFences(device.logical(), 1, &syncObjects.inFlightFence(currentFrame));
 
-  if (vkQueueSubmit(device.graphicsQueue(), 1, &submitInfo, syncObjects.inFlightFence(currentFrame))
-      != VK_SUCCESS) {
+  if (vkQueueSubmit(device.graphicsQueue(), 1, &submitInfo,
+                    syncObjects.inFlightFence(currentFrame)) != VK_SUCCESS) {
     throw std::runtime_error("failed to submit draw command buffer!");
   }
 
@@ -94,7 +94,8 @@ void Application::drawFrame(bool& framebufferResized) {
   presentInfo.pImageIndices = &imageIndex;
 
   result = vkQueuePresentKHR(device.presentQueue(), &presentInfo);
-  if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebufferResized) {
+  if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ||
+      framebufferResized) {
     recreateSwapChain(framebufferResized);
     framebufferResized = false;
   } else if (result != VK_SUCCESS) {
@@ -122,15 +123,15 @@ void Application::drawImGui() {
   ImGui::SameLine();
   ImGui::Text("counter = %d", counter);
 
-  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
-              ImGui::GetIO().Framerate);
+  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+              1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
   ImGui::End();
 
   ImGui::Render();
 }
 
 // for resize window
-void Application::recreateSwapChain(bool& framebufferResized) {
+void Application::recreateSwapChain(bool &framebufferResized) {
   framebufferResized = true;
 
   glm::ivec2 size;

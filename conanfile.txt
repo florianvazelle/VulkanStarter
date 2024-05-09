@@ -3,7 +3,7 @@ glfw/3.4
 glm/1.0.1
 imgui/1.78
 glslang/11.7.0
-doctest/2.4.11 
+doctest/2.4.11
 
 [generators]
 cmake

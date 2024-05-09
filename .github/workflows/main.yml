@@ -76,6 +76,7 @@ jobs:
             ${{ env.PIP_CACHE_DIR }}
             ${{ env.CHOCO_CACHE_DIR }}
             ${{ env.CPM_SOURCE_CACHE }}
+          key: linux-cache
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -125,6 +126,7 @@ jobs:
             ${{ env.PIP_CACHE_DIR }}
             ${{ env.CHOCO_CACHE_DIR }}
             ${{ env.CPM_SOURCE_CACHE }}
+          key: windows-cache
 
       - name: Install Dependencies
         run: |

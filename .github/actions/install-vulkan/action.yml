@@ -1,0 +1,27 @@
+name: Install Vulkan
+description: Install Vulkan.
+
+inputs:
+  vulkan_version:
+    description: The version of Vulkan.
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download Vulkan SDK
+      if: runner.os == 'Windows'
+      run: Invoke-WebRequest "https://sdk.lunarg.com/sdk/download/${{ inputs.vulkan_version }}/windows/VulkanSDK-${{ inputs.vulkan_version }}-Installer.exe" -OutFile VulkanSDK.exe -v
+
+    - name: Install Vulkan SDK
+      if: runner.os == 'Windows'
+      run: .\VulkanSDK.exe --accept-licenses --default-answer --confirm-command install
+      shell: cmd
+
+    - name: Install Vulkan SDK
+      if: runner.os == 'Linux'
+      run: |
+        wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
+        sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-${{ inputs.vulkan_version }}-focal.list https://packages.lunarg.com/vulkan/${{ inputs.vulkan_version }}/lunarg-vulkan-${{ inputs.vulkan_version }}-focal.list
+        sudo apt update
+        sudo apt install -f vulkan-sdk

@@ -1,0 +1,31 @@
+# build
+ninja-build
+cmake
+doxygen
+
+# ubuntu
+freeglut3-dev
+libxi-dev
+libxinerama-dev
+libxcb-cursor-dev
+xorg-dev
+libxcb-randr0-dev
+libxcb-xtest0-dev
+libxcb-xinerama0-dev
+libxcb-shape0-dev
+libxcb-xkb-dev
+libxcb-render-util0-dev
+libxcb-icccm4-dev
+libxcb-image0-dev
+libxcb-keysyms1-dev
+libxcb-sync-dev
+libxcb-xfixes0-dev
+libx11-xcb-dev
+libxcb-dri3-dev
+libxcb-util-dev
+libxcb-glx0-dev
+libxcb-dri2-0-dev
+libxcb-present-dev
+libxcb-composite0-dev
+libxcb-ewmh-dev
+libxcb-res0-dev

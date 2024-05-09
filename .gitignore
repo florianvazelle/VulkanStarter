@@ -9,3 +9,7 @@
 
 imgui.ini
 **/*.h
+
+venv/
+CMakeFiles/
+CMakeCache.txt

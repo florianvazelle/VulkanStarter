@@ -18,28 +18,34 @@ env:
   CPM_SOURCE_CACHE: "${{ github.workspace }}/cpm_modules"
 
 jobs:
+  generate-matrix:
+    name: Generate matrix
+    runs-on: ubuntu-latest
+
+    outputs:
+      include: ${{ steps.set-matrix.outputs.include }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: extractions/setup-just@v2
+
+      - id: set-matrix
+        run: |
+          MATRIX=$(
+            {
+              just ci-matrix | jq -Rc
+            } | jq -sc
+          )
+          echo "$MATRIX"
+          echo "include=$MATRIX" >> $GITHUB_OUTPUT
+
   linux:
     strategy:
-      fail-fast: false
+      fail-fast: false  
       matrix:
-        include:
-          - compiler: g++
-            version: 7 
-            cxx: g++-7
-          - compiler: g++
-            version: 8
-            cxx: g++-8
-          - compiler: g++
-            version: 9
-            cxx: g++-9
-          - compiler: clang
-            version: 9
-            cxx: clang++-9
-          - compiler: clang
-            version: 10
-            cxx: clang++-10
+        include: ${{ fromJson(needs.generate-matrix.outputs.include) }}
 
-    runs-on: ubuntu-20.04
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4

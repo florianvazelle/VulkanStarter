@@ -47,16 +47,12 @@ jobs:
 
       - id: set-matrix
         run: |
-          MATRIX=$(
-            {
-              just ci-matrix | jq -Rc
-            } | jq -sc
-          )
+          MATRIX=$(just ci-matrix | jq -sc)
           echo "$MATRIX"
           echo "include=$MATRIX" >> $GITHUB_OUTPUT
 
   linux:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     needs: [generate-matrix, check]
 
     strategy:
@@ -86,10 +82,20 @@ jobs:
       - name: Install Conan
         run: python -m pip install conan==1.*
 
-      - name: Install Dependencies
+      - uses: ./.github/actions/install-clang
+        if: matrix.compiler == 'clang'
+        with:
+          clang_version: ${{ matrix.version }}
+
+      - name: Install GCC
+        if: matrix.compiler == 'gcc'
         run: |
           sudo apt-get update
-          sudo apt-get install ${{ matrix.compiler }}-${{ matrix.version }}
+          sudo apt-get install gcc-${{ matrix.version }} g++-${{ matrix.version }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
           sudo apt-get install $(grep -vE "^\s*#" ./.github/apt-requirements.txt | tr "\n" " ")
 
       - uses: ./.github/actions/install-vulkan
@@ -128,7 +134,7 @@ jobs:
             ${{ env.CPM_SOURCE_CACHE }}
           key: windows-cache
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           choco config set cacheLocation ${{ env.CHOCO_CACHE_DIR }}
           choco install ninja cmake

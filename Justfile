@@ -6,8 +6,8 @@
 venv_dir := justfile_directory() / "venv"
 
 # Local directories for exports
-build_dir := justfile_directory() / "build"
-dist_dir := justfile_directory() / "dist"
+build_dir := replace(justfile_directory() / "build", "\\", "/")
+dist_dir := replace(justfile_directory() / "dist", "\\", "/")
 
 # === Commands ===
 
@@ -53,8 +53,8 @@ makedirs:
     cmake -E make_directory {{ build_dir }} {{ dist_dir }}
 
 # Configure the build
-configure build_tests="ON" gen_doc="ON" install_app="ON": makedirs
-    cmake {{ build_dir }} -DBUILD_TESTING={{ build_tests }} -DBUILD_DOCS={{ gen_doc }} -DINSTALL_APPS={{ install_app }} -DCMAKE_INSTALL_PREFIX="{{ dist_dir }}"
+configure: makedirs
+    cmake -B {{ build_dir }} -DBUILD_TESTING="ON" -DBUILD_DOCS="ON" -DINSTALL_APPS="ON" -DCMAKE_INSTALL_PREFIX="{{ dist_dir }}"
 
 # Build the project as debug
 debug: configure
@@ -86,18 +86,18 @@ clean:
 # Recipes triggered by CI steps.
 
 [private]
-@ci-row-gcc version os:
-    echo '{"compiler": "g++", "version": "{{ version }}", "cxx": "g++-{{ version }}", "os": "{{ os }}"}'
+ci-row-gcc version:
+    #!/bin/bash
+    # NOTE: g++-12 don't seems available on ubuntu-20.04
+    if [[ ! "{{ version }}" == "12" ]]; then echo '{"compiler": "gcc", "version": "{{ version }}", "cxx": "g++-{{ version }}"}'; fi
 
 [private]
-@ci-row-clang version os:
-    echo '{compiler": "clang", "version": "{{ version }}", "cxx": "clang++-{{ version }}", "os": "{{ os }}"}'
+@ci-row-clang version:
+    echo '{"compiler": "clang", "version": "{{ version }}", "cxx": "clang++-{{ version }}"}'
 
 # Display the compatibility matrix for compiler versions
 @ci-matrix:
     # GCC (https://gcc.gnu.org/releases.html)
-    for i in $(seq 7 9); do just ci-row-gcc $i ubuntu-20.04; done
-    for i in $(seq 10 14); do just ci-row-gcc $i ubuntu-22.04; done
+    for i in $(seq 7 13); do just ci-row-gcc $i; done
     # Clang (https://releases.llvm.org/)
-    for i in $(seq 9 10); do just ci-row-clang $i ubuntu-20.04; done
-    for i in $(seq 11 18); do just ci-row-clang $i ubuntu-22.04; done
+    for i in $(seq 9 17); do just ci-row-clang $i; done

@@ -25,9 +25,18 @@ env:
   CPM_SOURCE_CACHE: "${{ github.workspace }}/cpm_modules"
 
 jobs:
+  check:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: extractions/setup-just@v2
+
+      - name: Check
+        run: just fmt
+
   generate-matrix:
-    name: Generate matrix
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     outputs:
       include: ${{ steps.set-matrix.outputs.include }}
@@ -47,12 +56,13 @@ jobs:
           echo "include=$MATRIX" >> $GITHUB_OUTPUT
 
   linux:
+    runs-on: ${{ matrix.os }}
+    needs: [generate-matrix, check]
+
     strategy:
-      fail-fast: false  
+      fail-fast: false
       matrix:
         include: ${{ fromJson(needs.generate-matrix.outputs.include) }}
-
-    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4
@@ -101,6 +111,7 @@ jobs:
 
   windows:
     runs-on: windows-2019
+    needs: [check]
 
     steps:
       - uses: actions/checkout@v4
@@ -150,9 +161,7 @@ jobs:
           name: windows-msvc
 
   docs:
-    name: Publish documentation
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-22.04
     needs: [linux]
 
     steps:

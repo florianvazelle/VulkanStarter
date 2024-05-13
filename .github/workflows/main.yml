@@ -52,7 +52,7 @@ jobs:
           echo "include=$MATRIX" >> $GITHUB_OUTPUT
 
   linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [generate-matrix, check]
 
     strategy:

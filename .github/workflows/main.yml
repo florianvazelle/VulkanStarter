@@ -117,7 +117,7 @@ jobs:
           name: ubuntu-${{ matrix.cxx }}
 
   windows:
-    runs-on: windows-2019
+    runs-on: windows-2022
     needs: [check]
 
     steps:

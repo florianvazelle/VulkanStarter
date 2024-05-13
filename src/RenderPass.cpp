@@ -6,11 +6,9 @@
 
 using namespace vks;
 
-RenderPass::RenderPass(const Device& device, const SwapChain& swapChain)
-    : m_renderPass(VK_NULL_HANDLE),
-      m_oldRenderPass(VK_NULL_HANDLE),
-      m_device(device),
-      m_swapChain(swapChain) {}
+RenderPass::RenderPass(const Device &device, const SwapChain &swapChain)
+    : m_renderPass(VK_NULL_HANDLE), m_oldRenderPass(VK_NULL_HANDLE),
+      m_device(device), m_swapChain(swapChain) {}
 
 RenderPass::~RenderPass() {
   destroyFrameBuffers();
@@ -49,14 +47,15 @@ void RenderPass::createFrameBuffers() {
     info.height = m_swapChain.extent().height;
     info.layers = 1;
 
-    if (vkCreateFramebuffer(m_device.logical(), &info, nullptr, &m_frameBuffers[i]) != VK_SUCCESS) {
+    if (vkCreateFramebuffer(m_device.logical(), &info, nullptr,
+                            &m_frameBuffers[i]) != VK_SUCCESS) {
       throw std::runtime_error("Framebuffer creation failed");
     }
   }
 }
 
 void RenderPass::destroyFrameBuffers() {
-  for (VkFramebuffer& fb : m_frameBuffers) {
+  for (VkFramebuffer &fb : m_frameBuffers) {
     vkDestroyFramebuffer(m_device.logical(), fb, nullptr);
   }
 }

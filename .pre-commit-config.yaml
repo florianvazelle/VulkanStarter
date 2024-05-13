@@ -1,0 +1,33 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.4.0
+  hooks:
+  - id: check-added-large-files # Prevent giant files from being committed
+    args: ['--maxkb=1500']
+  - id: fix-byte-order-marker   # Prevents weird UTF-8 encoding edge cases
+  - id: check-case-conflict     # Check if case-insensitive filesystems would bork
+  - id: check-docstring-first   # Check for if docstring was misplaced
+  - id: check-executables-have-shebangs
+  - id: check-json              # Checks for valid json
+  - id: check-merge-conflict    # Checks strings that look like a committed merge conflict
+  - id: check-xml               # Checks for valid xml
+  - id: check-yaml              # Checks for valid yaml
+  - id: end-of-file-fixer       # Checks for ending with a newline
+  - id: mixed-line-ending       # Consistent LF or CRLF
+  - id: trailing-whitespace     # No trailing whitespace
+- repo: https://github.com/codespell-project/codespell
+  rev: v2.2.5
+  hooks:
+  - id: codespell
+- repo: local
+  hooks:
+  - id: format-cpp
+    name: format cpp
+    entry: clang-format
+    args:
+      - --style=llvm
+      - -Werror
+      - -i
+    language: system
+    files: \.(cpp|hpp)$
+    exclude: ^build/

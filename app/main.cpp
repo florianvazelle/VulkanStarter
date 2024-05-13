@@ -1,7 +1,8 @@
 #include <vks/Application.hpp>
 
 int main() {
-  // need to init glfw first, to get the suitable glfw extension for the vkinstance
+  // need to init glfw first, to get the suitable glfw extension for the
+  // vkinstance
   glfwInit();
 
   // Disable OpenGL

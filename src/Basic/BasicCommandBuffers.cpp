@@ -4,12 +4,12 @@
 
 using namespace vks;
 
-BasicCommandBuffers::BasicCommandBuffers(const Device& device,
-                                         const RenderPass& renderPass,
-                                         const SwapChain& swapChain,
-                                         const GraphicsPipeline& graphicsPipeline,
-                                         const CommandPool& commandPool)
-    : CommandBuffers(device, renderPass, swapChain, graphicsPipeline, commandPool) {
+BasicCommandBuffers::BasicCommandBuffers(
+    const Device &device, const RenderPass &renderPass,
+    const SwapChain &swapChain, const GraphicsPipeline &graphicsPipeline,
+    const CommandPool &commandPool)
+    : CommandBuffers(device, renderPass, swapChain, graphicsPipeline,
+                     commandPool) {
   createCommandBuffers();
 }
 
@@ -27,8 +27,8 @@ void BasicCommandBuffers::createCommandBuffers() {
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
   allocInfo.commandBufferCount = (uint32_t)m_commandBuffers.size();
 
-  if (vkAllocateCommandBuffers(m_device.logical(), &allocInfo, m_commandBuffers.data())
-      != VK_SUCCESS) {
+  if (vkAllocateCommandBuffers(m_device.logical(), &allocInfo,
+                               m_commandBuffers.data()) != VK_SUCCESS) {
     throw std::runtime_error("failed to allocate command buffers!");
   }
 
@@ -51,7 +51,8 @@ void BasicCommandBuffers::createCommandBuffers() {
     renderPassInfo.clearValueCount = 1;
     renderPassInfo.pClearValues = &clearColor;
 
-    vkCmdBeginRenderPass(m_commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+    vkCmdBeginRenderPass(m_commandBuffers[i], &renderPassInfo,
+                         VK_SUBPASS_CONTENTS_INLINE);
 
     vkCmdBindPipeline(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS,
                       m_graphicsPipeline.pipeline());

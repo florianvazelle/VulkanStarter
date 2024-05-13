@@ -20,40 +20,40 @@
 
 namespace vks {
 
-  class ImGuiApp {
-  public:
-    ImGuiApp(const Instance& instance,
-             Window& window,
-             const Device& device,
-             const SwapChain& swapChain,
-             const GraphicsPipeline& graphicsPipeline);
-    ~ImGuiApp();
+class ImGuiApp {
+public:
+  ImGuiApp(const Instance &instance, Window &window, const Device &device,
+           const SwapChain &swapChain,
+           const GraphicsPipeline &graphicsPipeline);
+  ~ImGuiApp();
 
-    inline VkCommandBuffer& command(uint32_t index) { return commandBuffers.command(index); }
-    inline const VkCommandBuffer& command(uint32_t index) const {
-      return commandBuffers.command(index);
-    }
+  inline VkCommandBuffer &command(uint32_t index) {
+    return commandBuffers.command(index);
+  }
+  inline const VkCommandBuffer &command(uint32_t index) const {
+    return commandBuffers.command(index);
+  }
 
-    void recordCommandBuffers(uint32_t bufferIdx) {
-      commandBuffers.recordCommandBuffers(bufferIdx);
-    }
+  void recordCommandBuffers(uint32_t bufferIdx) {
+    commandBuffers.recordCommandBuffers(bufferIdx);
+  }
 
-    void recreate();
+  void recreate();
 
-  private:
-    VkDescriptorPool imGuiDescriptorPool;
+private:
+  VkDescriptorPool imGuiDescriptorPool;
 
-    ImGuiRenderPass renderPass;
-    CommandPool commandPool;
-    ImGuiCommandBuffers commandBuffers;
+  ImGuiRenderPass renderPass;
+  CommandPool commandPool;
+  ImGuiCommandBuffers commandBuffers;
 
-    const Instance& m_instance;
-    const Device& m_device;
-    const SwapChain& m_swapChain;
-    const GraphicsPipeline& m_graphicsPipeline;
+  const Instance &m_instance;
+  const Device &m_device;
+  const SwapChain &m_swapChain;
+  const GraphicsPipeline &m_graphicsPipeline;
 
-    void createImGuiDescriptorPool();
-  };
-}  // namespace vks
+  void createImGuiDescriptorPool();
+};
+} // namespace vks
 
-#endif  // IMGUIAPP_HPP
+#endif // IMGUIAPP_HPP

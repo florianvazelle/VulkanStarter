@@ -7,28 +7,31 @@
 
 namespace vks {
 
-  class Instance;
+class Instance;
 
-  class DebugUtilsMessenger : public NonCopyable {
-  public:
-    explicit DebugUtilsMessenger(const Instance& instance);
-    ~DebugUtilsMessenger() noexcept(false);
+class DebugUtilsMessenger : public NonCopyable {
+public:
+  explicit DebugUtilsMessenger(const Instance &instance);
+  ~DebugUtilsMessenger() noexcept(false);
 
-    inline const VkDebugUtilsMessengerEXT& handle() const { return m_debugMessenger; }
+  inline const VkDebugUtilsMessengerEXT &handle() const {
+    return m_debugMessenger;
+  }
 
-    static VKAPI_ATTR VkBool32 VKAPI_CALL
-    DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                  VkDebugUtilsMessageTypeFlagsEXT messageType,
-                  const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-                  void* pUserData);
+  static VKAPI_ATTR VkBool32 VKAPI_CALL
+  DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+                VkDebugUtilsMessageTypeFlagsEXT messageType,
+                const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+                void *pUserData);
 
-    static void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+  static void PopulateDebugMessengerCreateInfo(
+      VkDebugUtilsMessengerCreateInfoEXT &createInfo);
 
-  private:
-    const Instance& m_instance;
-    VkDebugUtilsMessengerEXT m_debugMessenger;
-  };
+private:
+  const Instance &m_instance;
+  VkDebugUtilsMessengerEXT m_debugMessenger;
+};
 
-}  // namespace vks
+} // namespace vks
 
-#endif  // DEBUGUTILSMESSENGER_HPP
+#endif // DEBUGUTILSMESSENGER_HPP

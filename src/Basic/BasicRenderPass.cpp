@@ -5,7 +5,8 @@
 
 using namespace vks;
 
-BasicRenderPass::BasicRenderPass(const Device& device, const SwapChain& swapChain)
+BasicRenderPass::BasicRenderPass(const Device &device,
+                                 const SwapChain &swapChain)
     : RenderPass(device, swapChain) {
   createRenderPass();
   createFrameBuffers();
@@ -50,16 +51,18 @@ void BasicRenderPass::createRenderPass() {
   VkSubpassDependency dependency = {};
   // Implicit subpass
   dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-  // Subpass depdency is in index 0
+  // Subpass dependency is in index 0
   dependency.dstSubpass = 0;
   // Wait for color attachment output before accessing image
-  // This prevents the image being accessed by subpass and swap chain at the same time
+  // This prevents the image being accessed by subpass and swap chain at the
+  // same time
   dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
   dependency.srcAccessMask = 0;
-  // Prevent transistion from happening until after reading and writing of color attachment
+  // Prevent transition from happening until after reading and writing of color
+  // attachment
   dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-  dependency.dstAccessMask
-      = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+  dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
+                             VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
   // Create the render pass
   VkRenderPassCreateInfo createInfo = {};
@@ -71,7 +74,8 @@ void BasicRenderPass::createRenderPass() {
   createInfo.dependencyCount = 1;
   createInfo.pDependencies = &dependency;
 
-  if (vkCreateRenderPass(m_device.logical(), &createInfo, nullptr, &m_renderPass) != VK_SUCCESS) {
+  if (vkCreateRenderPass(m_device.logical(), &createInfo, nullptr,
+                         &m_renderPass) != VK_SUCCESS) {
     throw std::runtime_error("Render pass creation failed");
   }
 }

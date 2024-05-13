@@ -32,34 +32,34 @@
 
 namespace vks {
 
-  class Application {
-  public:
-    Application();
+class Application {
+public:
+  Application();
 
-    void run() { mainLoop(); }
+  void run() { mainLoop(); }
 
-  private:
-    Instance instance;
-    DebugUtilsMessenger debugMessenger;
-    Window window;
-    Device device;
-    SwapChain swapChain;
-    BasicRenderPass renderPass;
-    GraphicsPipeline graphicsPipeline;
-    CommandPool commandPool;
-    BasicCommandBuffers commandBuffers;
-    SyncObjects syncObjects;
+private:
+  Instance instance;
+  DebugUtilsMessenger debugMessenger;
+  Window window;
+  Device device;
+  SwapChain swapChain;
+  BasicRenderPass renderPass;
+  GraphicsPipeline graphicsPipeline;
+  CommandPool commandPool;
+  BasicCommandBuffers commandBuffers;
+  SyncObjects syncObjects;
 
-    ImGuiApp interface;
+  ImGuiApp interface;
 
-    size_t currentFrame = 0;
+  size_t currentFrame = 0;
 
-    void mainLoop();
+  void mainLoop();
 
-    void drawFrame(bool& framebufferResized);
-    void drawImGui();
+  void drawFrame(bool &framebufferResized);
+  void drawImGui();
 
-    void recreateSwapChain(bool& framebufferResized);
-  };
+  void recreateSwapChain(bool &framebufferResized);
+};
 
-}  // namespace vks
+} // namespace vks

@@ -8,12 +8,12 @@
 
 using namespace vks;
 
-ImGuiCommandBuffers::ImGuiCommandBuffers(const Device& device,
-                                         const RenderPass& renderPass,
-                                         const SwapChain& swapChain,
-                                         const GraphicsPipeline& graphicsPipeline,
-                                         const CommandPool& commandPool)
-    : CommandBuffers(device, renderPass, swapChain, graphicsPipeline, commandPool) {
+ImGuiCommandBuffers::ImGuiCommandBuffers(
+    const Device &device, const RenderPass &renderPass,
+    const SwapChain &swapChain, const GraphicsPipeline &graphicsPipeline,
+    const CommandPool &commandPool)
+    : CommandBuffers(device, renderPass, swapChain, graphicsPipeline,
+                     commandPool) {
   createCommandBuffers();
 }
 
@@ -31,8 +31,8 @@ void ImGuiCommandBuffers::createCommandBuffers() {
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
   allocInfo.commandBufferCount = static_cast<uint32_t>(m_commandBuffers.size());
 
-  if (vkAllocateCommandBuffers(m_device.logical(), &allocInfo, m_commandBuffers.data())
-      != VK_SUCCESS) {
+  if (vkAllocateCommandBuffers(m_device.logical(), &allocInfo,
+                               m_commandBuffers.data()) != VK_SUCCESS) {
     throw std::runtime_error("Unable to allocate UI command buffers!");
   }
 }
@@ -42,7 +42,8 @@ void ImGuiCommandBuffers::recordCommandBuffers(uint32_t bufferIdx) {
   cmdBufferBegin.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
   cmdBufferBegin.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
-  if (vkBeginCommandBuffer(m_commandBuffers[bufferIdx], &cmdBufferBegin) != VK_SUCCESS) {
+  if (vkBeginCommandBuffer(m_commandBuffers[bufferIdx], &cmdBufferBegin) !=
+      VK_SUCCESS) {
     throw std::runtime_error("Unable to start recording UI command buffer!");
   }
 
@@ -60,7 +61,8 @@ void ImGuiCommandBuffers::recordCommandBuffers(uint32_t bufferIdx) {
                        VK_SUBPASS_CONTENTS_INLINE);
 
   // Grab and record the draw data for Dear Imgui
-  ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_commandBuffers[bufferIdx]);
+  ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
+                                  m_commandBuffers[bufferIdx]);
 
   // End and submit render pass
   vkCmdEndRenderPass(m_commandBuffers[bufferIdx]);

@@ -26,7 +26,7 @@ env:
 
 jobs:
   check:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
@@ -36,7 +36,7 @@ jobs:
         run: just fmt
 
   generate-matrix:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     outputs:
       include: ${{ steps.set-matrix.outputs.include }}
@@ -52,7 +52,7 @@ jobs:
           echo "include=$MATRIX" >> $GITHUB_OUTPUT
 
   linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     needs: [generate-matrix, check]
 
     strategy:
@@ -169,7 +169,7 @@ jobs:
           name: windows-msvc
 
   docs:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [linux]
 
     steps:

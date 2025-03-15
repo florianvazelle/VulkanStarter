@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: extractions/setup-just@v2
+      - uses: extractions/setup-just@v3
 
       - name: Check
         run: just fmt
@@ -43,7 +43,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: extractions/setup-just@v2
+      - uses: extractions/setup-just@v3
 
       - id: set-matrix
         run: |
@@ -62,7 +62,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: extractions/setup-just@v2
+      - uses: extractions/setup-just@v3
 
       - name: Cache
         uses: actions/cache@v4
@@ -122,7 +122,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: extractions/setup-just@v2
+      - uses: extractions/setup-just@v3
 
       - name: Cache
         uses: actions/cache@v4

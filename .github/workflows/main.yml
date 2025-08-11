@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: extractions/setup-just@v2
 
       - name: Check
@@ -42,7 +42,7 @@ jobs:
       include: ${{ steps.set-matrix.outputs.include }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: extractions/setup-just@v2
 
       - id: set-matrix
@@ -61,7 +61,7 @@ jobs:
         include: ${{ fromJson(needs.generate-matrix.outputs.include) }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: extractions/setup-just@v2
 
       - name: Cache
@@ -121,7 +121,7 @@ jobs:
     needs: [check]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: extractions/setup-just@v2
 
       - name: Cache
@@ -173,7 +173,7 @@ jobs:
     needs: [linux]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: actions/download-artifact@v4
         with:

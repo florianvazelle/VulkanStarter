@@ -75,7 +75,7 @@ jobs:
           key: linux-cache
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.10'
 
@@ -140,7 +140,7 @@ jobs:
           choco install ninja cmake
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.10'
 

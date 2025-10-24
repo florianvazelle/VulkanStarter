@@ -111,7 +111,7 @@ jobs:
         run: just test
 
       - name: Upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           path: dist
           name: ubuntu-${{ matrix.cxx }}
@@ -163,7 +163,7 @@ jobs:
           VULKAN_SDK: "C:\\VulkanSDK\\${{ env.WINDOWS_VULKAN_VERSION }}"
 
       - name: Upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           path: dist
           name: windows-msvc
